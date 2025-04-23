@@ -161,6 +161,9 @@ Este script realiza o mesmo processo ETL (extração, transformação e carga), 
 
 ---
 
+![image](https://github.com/user-attachments/assets/f383eca0-93f7-4aab-b63a-685532bacd83)
+![image](https://github.com/user-attachments/assets/de1e560b-7c81-4707-b3ff-8dcb2cfbb24c)
+
 ## 📁 Estrutura do Repositório
 
 ```
