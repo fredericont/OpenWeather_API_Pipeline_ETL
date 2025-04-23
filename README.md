@@ -1,3 +1,4 @@
+
 # Weather ETL Project
 
 ## 📌 Descrição
@@ -8,10 +9,10 @@ Este projeto foi desenvolvido como uma prática de engenharia de dados, com o ob
 
 - **Extração:** Obtém dados de previsão do tempo (temperatura, umidade, etc.) para Natal-RN usando a API da OpenWeatherMap.  
 - **Transformação:** Processa os dados extraídos, convertendo temperaturas de Kelvin para Celsius e organizando-os em um DataFrame com **Pandas**.  
-- **Visualização:** Gera gráficos para análise da variação de temperatura e umidade ao longo do tempo.  
+- **Visualização (apenas no Jupyter Notebook):** Gera gráficos para análise da variação de temperatura e umidade ao longo do tempo.  
 - **Carga:** Armazena os dados processados em um banco de dados **PostgreSQL**, funcionando como um Data Warehouse básico.
 
-> Este projeto foi implementado em ambiente **Linux (Ubuntu)** com **Jupyter Notebook**, voltado para profissionais de dados que desejam praticar pipelines ETL e visualização de dados.
+> Este projeto foi implementado em ambiente **Linux (Ubuntu)**, com suporte tanto para execução interativa via **Jupyter Notebook** quanto para automação via script Python. Voltado para profissionais de dados que desejam praticar pipelines ETL e visualização de dados.
 
 ---
 
@@ -37,7 +38,7 @@ pip install pandas requests matplotlib seaborn psycopg2 sqlalchemy
 
 ## 📄 Arquivos Necessários
 
-### `secrets.json`  
+### `config/secrets.json`  
 Contém a chave da API da OpenWeatherMap:
 
 ```json
@@ -46,7 +47,7 @@ Contém a chave da API da OpenWeatherMap:
 }
 ```
 
-### `db_config.json`  
+### `config/db_config.json`  
 Contém as credenciais de acesso ao banco PostgreSQL:
 
 ```json
@@ -72,7 +73,7 @@ git clone https://github.com/fredericont/OpenWeather_API_Pipeline_ETL
 cd OpenWeather_API_Pipeline_ETL
 ```
 
-Este projeto foi desenvolvido para rodar em ambiente **Linux (Ubuntu)** com **Jupyter Notebook já instalado**. As bibliotecas utilizadas são nativas do ambiente padrão do Jupyter, portanto **não é necessário instalar pacotes adicionais**, a menos que esteja utilizando um ambiente customizado ou limpo.
+Este projeto foi desenvolvido para rodar em ambiente **Linux (Ubuntu)**. Para execução interativa, utiliza-se o **Jupyter Notebook** (`weather_etl.ipynb`). Para automação, utiliza-se o script Python (`weather_etl.py`). As bibliotecas necessárias são instaláveis via `pip`.
 
 > Caso o Jupyter não esteja instalado, você pode instalá-lo com:
 
@@ -96,17 +97,19 @@ Configure o PostgreSQL:
 CREATE DATABASE nome_do_banco;
 ```
 
-- Atualize o arquivo `db_config.json` com suas credenciais.  
-- Obtenha uma chave de API da OpenWeatherMap e atualize o arquivo `secrets.json`.
+- Atualize o arquivo `config/db_config.json` com suas credenciais.  
+- Obtenha uma chave de API da OpenWeatherMap e atualize o arquivo `config/secrets.json`.
 
 ---
 
 ### 2. Executando o Projeto
 
+#### Opção 1: Execução Interativa (Jupyter Notebook)
+
 Abra o Jupyter Notebook:
 
 ```bash
-jupyter notebook weather_etl.ipynb
+jupyter notebook etl/weather_etl.ipynb
 ```
 
 Execute as células na ordem:
@@ -115,17 +118,35 @@ Execute as células na ordem:
 2. Faz requisição à API da OpenWeatherMap  
 3. Exibe os dados brutos retornados pela API  
 4. Processa e organiza os dados em um DataFrame  
-5. Gera gráfico de variação de temperatura  
-6. Gera gráfico de variação de umidade  
-7. Conecta ao PostgreSQL  
-8. Cria a tabela `weather_data`  
-9. Insere os dados processados na tabela
+5. Exibe o `head` do DataFrame para inspeção  
+6. Gera gráfico de variação de temperatura  
+7. Gera gráfico de variação de umidade  
+8. Conecta ao PostgreSQL  
+9. Cria a tabela `weather_data`  
+10. Insere os dados processados na tabela
+
+> **Nota:** O Jupyter Notebook (`weather_etl.ipynb`) é ideal para exploração de dados, visualização de gráficos e validação interativa do pipeline ETL.
+
+#### Opção 2: Execução Automatizada (Script Python)
+
+Execute o script Python diretamente:
+
+```bash
+python etl/weather_etl.py
+```
+
+Este script realiza o mesmo processo ETL (extração, transformação e carga), mas sem gerar visualizações ou exibir o `head` do DataFrame. É ideal para integração em pipelines automatizados ou agendamentos (ex.: `cron`).
+
+> **Motivo para manter ambos os arquivos:**  
+> - O arquivo `weather_etl.ipynb` é voltado para **análise interativa**, permitindo que o usuário visualize os dados processados (via `head` do DataFrame) e os gráficos gerados (temperatura e umidade). É útil para desenvolvimento, validação e ensino.  
+> - O arquivo `weather_etl.py` é otimizado para **execução automatizada**, sem dependência de interfaces gráficas ou interação manual. Ele é mais leve e adequado para cenários de produção, como agendamentos ou integração com outros sistemas.  
+> Essa dualidade atende tanto a profissionais que desejam explorar os dados quanto a pipelines automatizados em ambientes operacionais.
 
 ---
 
 ### 3. Resultados Esperados
 
-#### 📊 Gráficos
+#### 📊 Gráficos (apenas no Jupyter Notebook)
 
 - **Temperatura:** Variação ao longo do tempo com linha de média  
 - **Umidade:** Variação relativa ao longo do tempo
@@ -143,20 +164,29 @@ Execute as células na ordem:
 ## 📁 Estrutura do Repositório
 
 ```
-weather_etl.ipynb      # Notebook principal contendo o pipeline ETL
-secrets.json           # Chave da API (não versionado)
-db_config.json         # Configuração do banco (não versionado)
-README.md              # Este arquivo
+.
+├── config/
+│   ├── db_config.json        # Credenciais do banco PostgreSQL
+│   └── secrets.json          # Chave da API OpenWeatherMap
+├── database/
+│   └── db_connection.py      # Função de conexão e execução de queries no banco
+├── etl/
+│   ├── weather_etl.ipynb     # Jupyter Notebook com gráficos e análise interativa
+│   └── weather_etl.py        # Script automatizado de ETL (sem visualizações)
+├── utils/
+│   └── helpers.py            # Funções auxiliares para transformação e carregamento
+└── README.md                 # Este arquivo
 ```
 
 ---
 
 ## 🌟 Possíveis Melhorias
 
-- Adicionar mais visualizações (ex.: pressão atmosférica, velocidade do vento)
-- Implementar agendamento para atualização automática (ex.: `schedule` ou `cron`)
+- Adicionar mais visualizações (ex.: pressão atmosférica, velocidade do vento) no Jupyter Notebook
+- Implementar agendamento para atualização automática no script Python (ex.: `schedule` ou `cron`)
 - Adicionar tratamento de erros mais robusto para falhas na API ou no banco
 - Incluir testes unitários para validar o pipeline ETL
+- Modularizar ainda mais o código, separando funções de extração, transformação e carga
 
 ---
 
@@ -168,7 +198,7 @@ Desenvolvido por **Francisco Frederico**, engenheiro/analista de dados, como par
 
 ## ⚠️ Notas Finais
 
-- Certifique-se de que os arquivos `secrets.json` e `db_config.json` **não sejam versionados** no GitHub. Use `.gitignore` para protegê-los.  
+- Certifique-se de que os arquivos `config/secrets.json` e `config/db_config.json` **não sejam versionados** no GitHub. Use `.gitignore` para protegê-los.  
 - Caso encontre problemas, verifique se o PostgreSQL está rodando e se as credenciais estão corretas.
 
 ---
